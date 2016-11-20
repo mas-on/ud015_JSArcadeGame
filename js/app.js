@@ -1,13 +1,15 @@
+var cell = { 'width' : 101, 'length' : 83}
+
 // Enemies our player must avoid
-var Enemy = function(x, y, speed) {
+var Enemy = function(row, speed) {
     // Variables applied to each of our instances go here,
     // we've provided one for you to get started
 
     // The image/sprite for our enemies, this uses
     // a helper we've provided to easily load images
     this.sprite = 'images/enemy-bug.png';
-    this.x = x; 
-    this.y = y; 
+    this.x = 0; 
+    this.y = row * cell.length - 20; 
     this.speed = speed;
 };
 
@@ -29,17 +31,20 @@ Enemy.prototype.render = function() {
 // This class requires an update(), render() and
 // a handleInput() method.
 
-var Player = function(x, y) {
+var Player = function(col, row) {
     this.sprite = 'images/char-boy.png';
-    this.x = x;
-    this.y = y; 
-    this.dx = 0;   
-    this.dy = 0;
+    this.x = col * cell.width;
+    this.y = row * cell.length - 11; 
+    this.shiftCol = 0;
+    this.shiftRow = 0;
 };
 
-Player.prototype.update = function(dt) {
-    this.x += this.dx*dt;
-    this.y += this.dy*dt;
+Player.prototype.update = function() {
+
+    this.x += this.shiftCol  * cell.wigth;
+    this.y += this.shiftRow  * cell.length;
+    this.shiftCol = 0;
+    this.shiftRow = 0;
 };
 
 Player.prototype.render = function() {
@@ -48,33 +53,33 @@ Player.prototype.render = function() {
 
 //prsdKey parameter is the pressed key
 Player.prototype.handleInput = function(prsdKey) {
-    this.dx = 0;
-    this.dy = 0;
+    this.shiftCol = 0;
+    this.shiftRow = 0;
 
     switch (prsdKey) {
         case 'left':
-            this.dx = -1;            
+            this.shiftCol = -1;            
             break;
         case 'up':            
-            this.dy = -1;
+            this.shiftRow = -1;
             break;
         case 'right':
-            this.dx = 1;            
+            this.shiftCol = 1;            
             break;
         case 'down':            
-            this.dy = 1;
+            this.shiftRow = 1;
             break;
         default:
             break;
-    };
+    }
 };
 
 
 // Now instantiate your objects.
 // Place all enemy objects in an array called allEnemies
 // Place the player object in a variable called player
-allEnemies[0] = new Enemy(41,50,2);
-player = new Player(120,500);
+var allEnemies = [ new Enemy(1,20), new Enemy(2,30) ];
+var player = new Player(2,2);
 
 
 
