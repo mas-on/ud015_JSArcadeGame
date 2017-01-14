@@ -1,14 +1,14 @@
 var cell = { 'width' : 101, 'length' : 83}
 
 // Enemies our player must avoid
-var Enemy = function(row, speed) {
+var Enemy = function(row, x, speed) {
     // Variables applied to each of our instances go here,
     // we've provided one for you to get started
 
     // The image/sprite for our enemies, this uses
     // a helper we've provided to easily load images
     this.sprite = 'images/enemy-bug.png';
-    this.x = 0; 
+    this.x = x; 
     this.y = row * cell.length - 20; 
     this.speed = speed;
 };
@@ -20,6 +20,12 @@ Enemy.prototype.update = function(dt) {
     // which will ensure the game runs at the same speed for
     // all computers.
     this.x += this.speed*dt;
+    var row = Math.round((this.y + 20) / cell.length);    
+    var colRight = Math.round((this.x + 30) / cell.width);
+    var colLeft = Math.round((this.x - 20) / cell.width);
+    if ( row == player.row && (colRight == player.col || colLeft == player.col ))      
+        player.reset(); 
+        
 };
 
 // Draw the enemy on the screen, required method for game
@@ -33,22 +39,35 @@ Enemy.prototype.render = function() {
 
 var Player = function(col, row) {
     this.sprite = 'images/char-boy.png';
-    this.x = col * cell.width;
-    this.y = row * cell.length - 11; 
+    this.col = col;
+    this.row = row ; 
     this.shiftCol = 0;
     this.shiftRow = 0;
+    this.initLocation = { 'col' : col, 'row' : row }
 };
 
 Player.prototype.update = function() {
-
-    this.x += this.shiftCol  * cell.wigth;
-    this.y += this.shiftRow  * cell.length;
+    
+    var newCol = this.col + this.shiftCol;
+    var newRow = this.row + this.shiftRow;
+    
+    if (newCol < 5 && newCol >= 0)
+        this.col = newCol;
+    if (newRow < 6 && newRow > 0)
+        this.row = newRow;
+    if (newRow == 0)
+        this.reset();
     this.shiftCol = 0;
     this.shiftRow = 0;
 };
 
+Player.prototype.reset = function() {
+    this.col = this.initLocation.col;
+    this.row = this.initLocation.row;
+}
+
 Player.prototype.render = function() {
-    ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
+    ctx.drawImage(Resources.get(this.sprite), this.col * cell.width, this.row * cell.length - 11);
 };
 
 //prsdKey parameter is the pressed key
@@ -75,11 +94,20 @@ Player.prototype.handleInput = function(prsdKey) {
 };
 
 
+function getRandomInt(min, max)
+{ return Math.floor(Math.random() * (max - min + 1)) + min; }
+
+
 // Now instantiate your objects.
 // Place all enemy objects in an array called allEnemies
 // Place the player object in a variable called player
+
 var allEnemies = [ new Enemy(1,20), new Enemy(2,30) ];
-var player = new Player(2,2);
+for (var i = 0; i < 300; i++)
+{
+    allEnemies[i] = new Enemy(getRandomInt(1, 3), getRandomInt(-cell.width*500,0), getRandomInt(20,100));
+}
+var player = new Player(2,5);
 
 
 
