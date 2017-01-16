@@ -8,6 +8,12 @@
             "file": "${workspaceRoot}/index.html"
         },
         {
+            "name": "chrome Launch index.html",
+            "type": "chrome",
+            "request": "launch",
+            "file": "${workspaceRoot}/index.html"
+        },
+        {
             "name": "Launch localhost",
             "type": "firefox",
             "request": "launch",
