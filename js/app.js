@@ -1,16 +1,14 @@
 var cell = { 'width' : 101, 'length' : 83}
 
 // Enemies our player must avoid
-var Enemy = function(row, x, speed) {
+var Enemy = function() {
     // Variables applied to each of our instances go here,
     // we've provided one for you to get started
 
     // The image/sprite for our enemies, this uses
     // a helper we've provided to easily load images
     this.sprite = 'images/enemy-bug.png';
-    this.x = x; 
-    this.y = row * cell.length - 20; 
-    this.speed = speed;
+    this.reset();
 };
 
 // Update the enemy's position, required method for game
@@ -25,12 +23,20 @@ Enemy.prototype.update = function(dt) {
     var colLeft = Math.round((this.x - 20) / cell.width);
     if ( row == player.row && (colRight == player.col || colLeft == player.col ))      
         player.reset(); 
-        
+    if ( colRight == 6)
+        this.reset();    
 };
 
 // Draw the enemy on the screen, required method for game
 Enemy.prototype.render = function() {
     ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
+};
+
+Enemy.prototype.reset = function() {
+    //this.x = getRandomInt(-cell.width*500,0);
+    this.x = -cell.width; 
+    this.y = getRandomInt(1, 3) * cell.length - 20; 
+    this.speed = getRandomInt(20,100);
 };
 
 // Now write your own player class
@@ -102,10 +108,10 @@ function getRandomInt(min, max)
 // Place all enemy objects in an array called allEnemies
 // Place the player object in a variable called player
 
-var allEnemies = [ new Enemy(1,20), new Enemy(2,30) ];
-for (var i = 0; i < 300; i++)
+var allEnemies = [];
+for (var i = 0; i < 3; i++)
 {
-    allEnemies[i] = new Enemy(getRandomInt(1, 3), getRandomInt(-cell.width*500,0), getRandomInt(20,100));
+    allEnemies[i] = new Enemy();
 }
 var player = new Player(2,5);
 
